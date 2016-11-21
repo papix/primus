@@ -1,0 +1,19 @@
+hash: f238afdb3fce913f6dbf66e26dbd3c947dc0aeae30157f7e0509ebc87a232412
+updated: 2016-11-21T13:59:05.164206639+09:00
+imports:
+- name: github.com/BurntSushi/toml
+  version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
+- name: github.com/gorilla/websocket
+  version: e8f0f8aaa98dfb6586cbdf2978d511e3199a960a
+- name: github.com/graarh/golang-socketio
+  version: 61eb0294e68612291d89d4bd319910974741eba4
+  subpackages:
+  - protocol
+  - transport
+- name: github.com/Sirupsen/logrus
+  version: d26492970760ca5d33129d2d799e34be5c4782eb
+- name: golang.org/x/sys
+  version: f64b50fbea64174967a8882830d621a18ee1548e
+  subpackages:
+  - unix
+testImports: []

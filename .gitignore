@@ -1,0 +1,4 @@
+.vendor
+vendor
+bin/primus-client
+bin/primus-server
