@@ -1,9 +1,13 @@
 package server
 
 import (
-	"io/ioutil"
+	"bufio"
+	"bytes"
+	"io"
 	"net/http"
 	"strings"
+
+	"github.com/Sirupsen/logrus"
 )
 
 type PrimusPayload struct {
@@ -14,28 +18,38 @@ type PrimusPayload struct {
 	Header  map[string][]string `json:"header"`
 }
 
-func ReceiveHandler(w http.ResponseWriter, r *http.Request) {
+func (ps *PrimusServer) ReceiveHandler(w http.ResponseWriter, r *http.Request) {
+	ps.AccessLog.WithFields(logrus.Fields{
+		"method":     r.Method,
+		"remoteAddr": r.RemoteAddr,
+		"uri":        r.RequestURI,
+		"path":       r.URL.Path,
+	}).Infoln("Requests")
+
 	channel := strings.TrimLeft(r.URL.Path, "/receive/")
 
 	if channel == "" {
-		sendResponse(w, "invalid url", http.StatusInternalServerError)
+		ps.sendResponse(w, "invalid url", http.StatusInternalServerError)
 		return
 	}
 
-	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		sendResponse(w, "failed to read request body", http.StatusInternalServerError)
+	var buf bytes.Buffer
+	reqBody := bufio.NewWriter(&buf)
+
+	if _, err := io.Copy(reqBody, r.Body); err != nil {
+		ps.sendResponse(w, "failed to read request body", http.StatusInternalServerError)
 		return
 	}
+	defer r.Body.Close()
 
 	payload := &PrimusPayload{
 		Channel: channel,
 		Method:  r.Method,
-		Body:    string(reqBody),
+		Body:    buf.String(),
 		Header:  r.Header,
 		Query:   r.URL.RawQuery,
 	}
-	SocketIO.BroadcastTo(channel, "receive", payload)
+	ps.SocketIO.BroadcastTo(channel, "receive", payload)
 
-	sendResponse(w, "ok", http.StatusOK)
+	ps.sendResponse(w, "ok", http.StatusOK)
 }

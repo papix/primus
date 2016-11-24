@@ -1,10 +1,12 @@
 package client
 
-import "github.com/BurntSushi/toml"
+import (
+	"github.com/BurntSushi/toml"
+)
 
 type ConfToml struct {
-	Server ServerSection     `toml:"server"`
-	Route  map[string]string `toml:"route"`
+	Server ServerSection  `toml:"server"`
+	Route  []RouteSection `toml:"route"`
 }
 
 type ServerSection struct {
@@ -13,8 +15,9 @@ type ServerSection struct {
 	SSL  bool   `toml:"ssl"`
 }
 
-func init() {
-	Conf = BuildDefaultConf()
+type RouteSection struct {
+	Channel string `toml:"channel"`
+	Path    string `toml:"path"`
 }
 
 func BuildDefaultConf() ConfToml {
@@ -30,7 +33,6 @@ func BuildDefaultConf() ConfToml {
 
 func LoadConf(confPath string, conf *ConfToml) error {
 	_, err := toml.DecodeFile(confPath, conf)
-
 	if err != nil {
 		return err
 	}

@@ -10,7 +10,7 @@ type ConfToml struct {
 }
 
 type ServerSection struct {
-	Port string `toml:"port"`
+	Port int `toml:"port"`
 }
 
 type LogSection struct {
@@ -19,26 +19,19 @@ type LogSection struct {
 	Level     string `toml:"level"`
 }
 
-func init() {
-	Conf = BuildDefaultConf()
-}
-
 func BuildDefaultConf() ConfToml {
 	var conf ConfToml
 
 	// Server
-	conf.Server.Port = "14300"
-
-	// Log
-	conf.Log.AccessLog = "stdout"
-	conf.Log.ErrorLog = "stderr"
-	conf.Log.Level = "error"
+	conf.Server.Port = 14300
+	// 	conf.Log.Level = "error"
+	conf.Log.Level = "debug"
 
 	return conf
 }
 
-func LoadConf(confPath string, conf *ConfToml) error {
-	_, err := toml.DecodeFile(confPath, conf)
+func (ps *PrimusServer) loadConf(confPath string) error {
+	_, err := toml.DecodeFile(confPath, &ps.Conf)
 	if err != nil {
 		return err
 	}

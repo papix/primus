@@ -5,11 +5,11 @@ all: bin/primus-server bin/primus-client
 bundle:
 	glide install
 
-bin/primus-server: cmd/primus/primus-server.go *.go server/*.go
-	GO15VENDOREXPERIMENT=1 go build $(GOFLAGS) -o bin/primus-server cmd/primus/primus-server.go
+bin/primus-server: cmd/primus/server/main.go server/*.go
+	GO15VENDOREXPERIMENT=1 go build $(GOFLAGS) -o bin/primus-server cmd/primus/server/main.go
 
-bin/primus-client: cmd/primus/primus-client.go *.go client/*.go
-	GO15VENDOREXPERIMENT=1 go build $(GOFLAGS) -o bin/primus-client cmd/primus/primus-client.go
+bin/primus-client: cmd/primus/client/main.go client/*.go
+	GO15VENDOREXPERIMENT=1 go build $(GOFLAGS) -o bin/primus-client cmd/primus/client/main.go
 
 fmt:
 	@echo $(TARGETS_NOVENDOR) | xargs go fmt
