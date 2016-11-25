@@ -1,5 +1,5 @@
 hash: f238afdb3fce913f6dbf66e26dbd3c947dc0aeae30157f7e0509ebc87a232412
-updated: 2016-11-21T13:59:05.164206639+09:00
+updated: 2016-11-25T12:55:31.672795137+09:00
 imports:
 - name: github.com/BurntSushi/toml
   version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
@@ -10,10 +10,18 @@ imports:
   subpackages:
   - protocol
   - transport
+- name: github.com/mattn/go-isatty
+  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/pkg/errors
+  version: 839d9e913e063e28dfd0e6c7b7512793e0a48be9
 - name: github.com/Sirupsen/logrus
   version: d26492970760ca5d33129d2d799e34be5c4782eb
+- name: github.com/uber-go/atomic
+  version: 9e99152552a6ce13fa3b2ce4a9c4fb117cca4506
+- name: github.com/uber-go/zap
+  version: 11e8d8f6b3c9c574462f8278f3f2b7eb56b12e27
 - name: golang.org/x/sys
-  version: f64b50fbea64174967a8882830d621a18ee1548e
+  version: 30237cf4eefd639b184d1f2cb77a581ea0be8947
   subpackages:
   - unix
 testImports: []
