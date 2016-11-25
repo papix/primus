@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/graarh/golang-socketio"
@@ -19,8 +20,8 @@ import (
 
 type PrimusServer struct {
 	Conf      ConfToml
-	SocketIO  *gosocketio.Server
 	Listner   net.Listener
+	SocketIO  *gosocketio.Server
 	AccessLog *logrus.Logger
 	ErrorLog  *logrus.Logger
 }
@@ -77,7 +78,7 @@ func (ps *PrimusServer) ListenServer() error {
 
 	go ps.ListenSignal()
 
-	return server.Serve(ps.Listner)
+	return server.Serve(tcpKeepAliveListener{ps.Listner.(*net.TCPListener)})
 }
 
 func (ps *PrimusServer) ListenSignal() {
@@ -122,4 +123,18 @@ func (ps *PrimusServer) optionParse() error {
 	}
 
 	return nil
+}
+
+type tcpKeepAliveListener struct {
+	*net.TCPListener
+}
+
+func (ln tcpKeepAliveListener) Accept() (c net.Conn, err error) {
+	tc, err := ln.AcceptTCP()
+	if err != nil {
+		return
+	}
+	tc.SetKeepAlive(true)
+	tc.SetKeepAlivePeriod(3 * time.Minute)
+	return tc, nil
 }

@@ -1,12 +1,13 @@
 package client
 
 import (
+	"bytes"
+	"compress/gzip"
 	"flag"
 	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
@@ -16,14 +17,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/uber-go/zap"
 )
-
-type PrimusPayload struct {
-	Channel string              `json:"channel"`
-	Method  string              `json:"string"`
-	Query   string              `json:"query"`
-	Body    string              `json:"body"`
-	Header  map[string][]string `json:"header"`
-}
 
 type PrimusClient struct {
 	Conf   ConfToml
@@ -87,7 +80,7 @@ func (pc *PrimusClient) Run() int {
 		socket.Emit("join", c.Channel)
 	}
 
-	socket.On("receive", func(c *gosocketio.Channel, payload PrimusPayload) {
+	socket.On("receive", func(c *gosocketio.Channel, payload common.PrimusPayload) {
 		var url string
 		if payload.Query != "" {
 			url = fmt.Sprintf("http://localhost:8080/?%s", payload.Query)
@@ -95,15 +88,24 @@ func (pc *PrimusClient) Run() int {
 			url = fmt.Sprintf("http://localhost:8080/")
 		}
 
-		body := strings.NewReader(payload.Body)
-		req, _ := http.NewRequest(payload.Method, url, body)
-		for h, v := range payload.Header {
-			req.Header.Set(h, v[0])
-		}
-
-		_, err := http.DefaultClient.Do(req)
+		// gzip decompression
+		body, err := gzip.NewReader(bytes.NewBuffer(payload.Body))
 		if err != nil {
-			pc.Logger.Info(err.Error())
+			pc.Logger.Error(err.Error())
+			return
+		}
+		defer body.Close()
+
+		// create request
+		req, err := http.NewRequest(payload.Method, url, body)
+		if err != nil {
+			pc.Logger.Error(err.Error())
+			return
+		}
+		req.Header = payload.Header
+
+		if _, err = http.DefaultClient.Do(req); err != nil {
+			pc.Logger.Error(err.Error())
 		}
 	})
 

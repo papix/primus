@@ -18,5 +18,5 @@ func (ps *PrimusServer) Mount() {
 	})
 
 	http.Handle("/socket.io/", ps.SocketIO)
-	http.HandleFunc("/receive", ps.ReceiveHandler)
+	http.HandleFunc("/receive/", ps.ReceiveHandler)
 }
