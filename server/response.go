@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/papix/primus"
+	"github.com/papix/primus/common"
 )
 
 type PrimusResponse struct {
@@ -19,7 +19,7 @@ func (ps *PrimusServer) sendResponse(w http.ResponseWriter, msg string, code int
 	)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Server", fmt.Sprintf("primus %s", primus.Version))
+	w.Header().Set("Server", fmt.Sprintf("primus %s", common.Version))
 
 	respPrimus.Message = msg
 	respBody, err := json.Marshal(respPrimus)

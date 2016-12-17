@@ -1,10 +1,10 @@
 hash: f238afdb3fce913f6dbf66e26dbd3c947dc0aeae30157f7e0509ebc87a232412
-updated: 2016-11-25T12:55:31.672795137+09:00
+updated: 2016-12-17T12:02:35.613116968+09:00
 imports:
 - name: github.com/BurntSushi/toml
   version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
 - name: github.com/gorilla/websocket
-  version: e8f0f8aaa98dfb6586cbdf2978d511e3199a960a
+  version: 0868951cdb8e69bc42df4598bdc6164ff2f1a072
 - name: github.com/graarh/golang-socketio
   version: 61eb0294e68612291d89d4bd319910974741eba4
   subpackages:
@@ -13,15 +13,15 @@ imports:
 - name: github.com/mattn/go-isatty
   version: 30a891c33c7cde7b02a981314b4228ec99380cca
 - name: github.com/pkg/errors
-  version: 839d9e913e063e28dfd0e6c7b7512793e0a48be9
+  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/Sirupsen/logrus
   version: d26492970760ca5d33129d2d799e34be5c4782eb
 - name: github.com/uber-go/atomic
-  version: 9e99152552a6ce13fa3b2ce4a9c4fb117cca4506
+  version: 3b8db5e93c4c02efbc313e17b2e796b0914a01fb
 - name: github.com/uber-go/zap
-  version: 11e8d8f6b3c9c574462f8278f3f2b7eb56b12e27
+  version: 05dadc4e239529c50d6f730c17f0a3aaf35b64fd
 - name: golang.org/x/sys
-  version: 30237cf4eefd639b184d1f2cb77a581ea0be8947
+  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:
   - unix
 testImports: []
