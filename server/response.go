@@ -12,7 +12,7 @@ type PrimusResponse struct {
 	Message string `json:"message"`
 }
 
-func sendResponse(w http.ResponseWriter, msg string, code int) {
+func (ps *PrimusServer) sendResponse(w http.ResponseWriter, msg string, code int) {
 	var (
 		respBody   []byte
 		respPrimus PrimusResponse
@@ -27,15 +27,17 @@ func sendResponse(w http.ResponseWriter, msg string, code int) {
 	if err != nil {
 		msg := "Response-body could not be created"
 		http.Error(w, msg, http.StatusInternalServerError)
-		LogError.Error(msg)
+		ps.Errorln(msg)
 		return
 	}
 
 	switch code {
 	case http.StatusOK:
-		fmt.Fprintf(w, string(respBody))
+		w.WriteHeader(http.StatusOK)
+		w.Write(respBody)
 	default:
-		http.Error(w, string(respBody), code)
-		LogError.Error(msg)
+		w.WriteHeader(code)
+		w.Write(respBody)
+		ps.Errorln("status code:", code)
 	}
 }
