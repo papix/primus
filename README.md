@@ -1,7 +1,5 @@
 # Primus
 
-Publish Received Incomming-webhook to MUlti Service.
-
 ## Usage
 
 ### Server
@@ -34,5 +32,12 @@ host = "localhost"
 port = 14300
 ssl = false
 
+[[Route]]
+channel = "sample1"
+
+host = "localhost"
+port = 8080
+path = "/sample/endpoint"
+ssl  = false
 ```
 
