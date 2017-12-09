@@ -17,7 +17,10 @@ type ServerSection struct {
 
 type RouteSection struct {
 	Channel string `toml:"channel"`
+	Host    string `toml:"host"`
+	Port    int    `toml:"port"`
 	Path    string `toml:"path"`
+	SSL     bool   `toml:"ssl"`
 }
 
 func BuildDefaultConf() ConfToml {
@@ -37,4 +40,13 @@ func LoadConf(confPath string, conf *ConfToml) error {
 		return err
 	}
 	return nil
+}
+
+func (conf *ConfToml) FetchRouteByChannel(channel string) RouteSection {
+	for _, r := range conf.Route {
+		if r.Channel == channel {
+			return r
+		}
+	}
+	return RouteSection{}
 }

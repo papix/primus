@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -76,16 +77,47 @@ func (pc *PrimusClient) Run() int {
 	}
 	defer socket.Close()
 
-	for _, c := range pc.Conf.Route {
-		socket.Emit("join", c.Channel)
+	for _, r := range pc.Conf.Route {
+		socket.Emit("join", r.Channel)
 	}
 
 	socket.On("receive", func(c *gosocketio.Channel, payload common.PrimusPayload) {
+		r := pc.Conf.FetchRouteByChannel(payload.Channel)
+
 		var url string
-		if payload.Query != "" {
-			url = fmt.Sprintf("http://localhost:8080/?%s", payload.Query)
+		var scheme string
+		var host string
+		var port string
+		var path string
+
+		if r.SSL {
+			scheme = "https"
 		} else {
-			url = fmt.Sprintf("http://localhost:8080/")
+			scheme = "http"
+		}
+
+		if r.Host != "" {
+			host = r.Host
+		} else {
+			host = "localhost"
+		}
+
+		if r.Port != 0 {
+			port = fmt.Sprintf(":%d", r.Port)
+		}
+
+		if r.Path != "" {
+			if strings.HasPrefix(r.Path, "/") {
+				path = r.Path
+			} else {
+				path = fmt.Sprintf("/%s", r.Path)
+			}
+		}
+
+		if payload.Query != "" {
+			url = fmt.Sprintf("%s://%s%s%s?%s", scheme, host, port, path, payload.Query)
+		} else {
+			url = fmt.Sprintf("%s://%s%s%s", scheme, host, port, path)
 		}
 
 		// gzip decompression
