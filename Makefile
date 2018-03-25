@@ -1,18 +1,18 @@
-TARGETS_NOVENDOR=$(shell glide novendor)
+DEP ?= dep
+BUILD_DIR = ./build
+PRIMUS_CLIENT = $(BUILD_DIR)/primus-client
+PRIMUS_SERVER = $(BUILD_DIR)/primus-server
 
-all: bin/primus-server bin/primus-client
+all: deps $(PRIMUS_CLIENT) $(PRIMUS_SERVER)
 
-bundle:
-	glide install
+deps:
+	$(DEP) ensure -vendor-only
 
-bin/primus-server: cmd/primus/server/main.go server/*.go
-	go build $(GOFLAGS) -o bin/primus-server cmd/primus/server/main.go
+$(PRIMUS_CLIENT):
+	go build -o $(PRIMUS_CLIENT) cmd/primus/client/main.go
 
-bin/primus-client: cmd/primus/client/main.go client/*.go
-	go build $(GOFLAGS) -o bin/primus-client cmd/primus/client/main.go
-
-fmt:
-	@echo $(TARGETS_NOVENDOR) | xargs go fmt
+$(PRIMUS_SERVER):
+	go build -o $(PRIMUS_SERVER) cmd/primus/server/main.go
 
 clean:
-	rm -rf bin/primus*
+	rm -rf $(BUILD_DIR)

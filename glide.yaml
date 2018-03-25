@@ -1,9 +1,0 @@
-package: github.com/papix/primus
-import:
-- package: github.com/BurntSushi/toml
-  version: ^0.2.0
-- package: github.com/Sirupsen/logrus
-  version: ^0.11.0
-- package: github.com/graarh/golang-socketio
-  subpackages:
-  - transport
